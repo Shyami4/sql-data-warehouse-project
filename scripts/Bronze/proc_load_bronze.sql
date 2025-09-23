@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS load_audit_sql (
   ts          TIMESTAMP
 ) USING DELTA;
 
-- -----------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
 -- TEMP VIEW: __run
 -- Purpose:
 --   Databricks SQL doesn’t support T-SQL-style variables (DECLARE/SET), so we
@@ -206,28 +206,37 @@ UNION ALL SELECT 'erp_cust_az12',     COUNT(*) FROM erp_cust_az12
 UNION ALL SELECT 'erp_px_cat_g1v2',   COUNT(*) FROM erp_px_cat_g1v2
 ORDER BY table_name;
 
--- ---------------------------------------------------------------------------
--- 4) Run-time summary for THIS batch (durations + rows)
--- ---------------------------------------------------------------------------
-WITH run_id AS (
-  SELECT batch_id FROM __run              -- <-- was "FROM batch" by mistake
+-- -- 4) Run-time summary for THIS batch (durations + rows)
+WITH chosen_batch AS (
+  -- Prefer the temp view created at the top; if not present, fall back to latest batch_id in audit table
+  SELECT batch_id FROM __run
+  UNION ALL
+  SELECT batch_id
+  FROM (
+    SELECT batch_id, max(ts) AS last_ts
+    FROM datawarehouse.bronze.load_audit_sql
+    GROUP BY batch_id
+    ORDER BY last_ts DESC
+    LIMIT 1
+  )
+  LIMIT 1
 ),
 durs AS (
   SELECT
     a.table_name,
     MIN(CASE WHEN a.phase = 'start' THEN a.ts END) AS start_ts,
     MAX(CASE WHEN a.phase = 'end'   THEN a.ts END) AS end_ts
-  FROM load_audit_sql a
-  JOIN run_id r ON a.batch_id = r.batch_id
+  FROM datawarehouse.bronze.load_audit_sql a
+  JOIN chosen_batch b ON a.batch_id = b.batch_id
   GROUP BY a.table_name
 ),
 counts AS (
-  SELECT 'crm_cust_info'   AS table_name, COUNT(*) AS rows_after FROM crm_cust_info
-  UNION ALL SELECT 'crm_prd_info',      COUNT(*) FROM crm_prd_info
-  UNION ALL SELECT 'crm_sales_details', COUNT(*) FROM crm_sales_details
-  UNION ALL SELECT 'erp_loc_a101',      COUNT(*) FROM erp_loc_a101
-  UNION ALL SELECT 'erp_cust_az12',     COUNT(*) FROM erp_cust_az12
-  UNION ALL SELECT 'erp_px_cat_g1v2',   COUNT(*) FROM erp_px_cat_g1v2
+  SELECT 'crm_cust_info'   AS table_name, COUNT(*) AS rows_after FROM datawarehouse.bronze.crm_cust_info
+  UNION ALL SELECT 'crm_prd_info',      COUNT(*) FROM datawarehouse.bronze.crm_prd_info
+  UNION ALL SELECT 'crm_sales_details', COUNT(*) FROM datawarehouse.bronze.crm_sales_details
+  UNION ALL SELECT 'erp_loc_a101',      COUNT(*) FROM datawarehouse.bronze.erp_loc_a101
+  UNION ALL SELECT 'erp_cust_az12',     COUNT(*) FROM datawarehouse.bronze.erp_cust_az12
+  UNION ALL SELECT 'erp_px_cat_g1v2',   COUNT(*) FROM datawarehouse.bronze.erp_px_cat_g1v2
 )
 SELECT
   d.table_name,
