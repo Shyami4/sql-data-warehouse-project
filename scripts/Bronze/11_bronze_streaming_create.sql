@@ -70,8 +70,8 @@ FROM STREAM read_files(
   '/Volumes/datawarehouse/bronze/landing/crm/cust_info*.csv',
   format       => 'CSV',
   header       => true,
-  multiline    => false,
-  inferSchema  => false        -- keep Bronze raw: all STRING
+  multiline    => false
+ -- inferSchema  => false        -- keep Bronze raw: all STRING
 );
 
 /* ------------------------------------------------------------------------- */
@@ -88,8 +88,8 @@ FROM STREAM read_files(
   '/Volumes/datawarehouse/bronze/landing/crm/prd_info*.csv',
   format       => 'CSV',
   header       => true,
-  multiline    => false,
-  inferSchema  => false
+  multiline    => false
+--  inferSchema  => false
 );
 
 /* ------------------------------------------------------------------------- */
@@ -106,8 +106,8 @@ FROM STREAM read_files(
   '/Volumes/datawarehouse/bronze/landing/crm/sales_details*.csv',
   format       => 'CSV',
   header       => true,
-  multiline    => false,
-  inferSchema  => false
+  multiline    => false
+--  inferSchema  => false
 );
 
 /* ------------------------------------------------------------------------- */
@@ -124,8 +124,8 @@ FROM STREAM read_files(
   '/Volumes/datawarehouse/bronze/landing/erp/LOC_A101*.csv',
   format       => 'CSV',
   header       => true,
-  multiline    => false,
-  inferSchema  => false
+  multiline    => false
+--  inferSchema  => false
 );
 
 /* ------------------------------------------------------------------------- */
@@ -142,8 +142,8 @@ FROM STREAM read_files(
   '/Volumes/datawarehouse/bronze/landing/erp/CUST_AZ12*.csv',
   format       => 'CSV',
   header       => true,
-  multiline    => false,
-  inferSchema  => false
+  multiline    => false
+--  inferSchema  => false
 );
 
 /* ------------------------------------------------------------------------- */
@@ -160,7 +160,7 @@ FROM STREAM read_files(
   '/Volumes/datawarehouse/bronze/landing/erp/PX_CAT_G1V2*.csv',
   format       => 'CSV',
   header       => true,
-  multiline    => false,
-  inferSchema  => false
+  multiline    => false
+--  inferSchema  => false
 );
 
