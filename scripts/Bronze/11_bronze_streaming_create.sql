@@ -49,12 +49,12 @@ USE SCHEMA bronze;
 /* ------------------------------------------------------------------------- */
 /* Safeguard: drop any existing non-streaming tables with the same names     */
 /* ------------------------------------------------------------------------- */
-DROP TABLE IF EXISTS crm_cust_info;
-DROP TABLE IF EXISTS crm_prd_info;
-DROP TABLE IF EXISTS crm_sales_details;
-DROP TABLE IF EXISTS erp_loc_a101;
-DROP TABLE IF EXISTS erp_cust_az12;
-DROP TABLE IF EXISTS erp_px_cat_g1v2;
+-- DROP TABLE IF EXISTS crm_cust_info;
+-- DROP TABLE IF EXISTS crm_prd_info;
+-- DROP TABLE IF EXISTS crm_sales_details;
+-- DROP TABLE IF EXISTS erp_loc_a101;
+-- DROP TABLE IF EXISTS erp_cust_az12;
+-- DROP TABLE IF EXISTS erp_px_cat_g1v2;
 
 /* ------------------------------------------------------------------------- */
 /* CRM: cust_info                                                            */
